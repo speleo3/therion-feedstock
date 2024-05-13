@@ -1,0 +1,51 @@
+{% set version = "6.2.1" %}
+
+package:
+  name: therion
+  version: {{ version }}
+
+source:
+  url: https://github.com/therion/therion/archive/v{{ version }}.tar.gz
+
+build:
+  number: 0
+  ignore_run_exports:
+    - proj
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ cdt('mesa-libgl-devel') }}     # [linux]
+    - catch2
+    - cmake
+    - perl          # [not osx]
+    - python 3
+
+  host:
+    - proj 9.3.1 # FIXME https://github.com/conda-forge/proj.4-feedstock/issues/144
+    - fmt
+    - freetype
+    - libglu        # [not osx]
+    - imagemagick
+    - libjpeg-turbo
+    - libpng
+    - shapelib 1.5  # pc fix in build.sh
+    - tk
+    - vtk
+    - wxwidgets
+    - zlib
+
+  run:
+    - bwidget
+    - texlive-core
+    - {{ pin_compatible('proj') }}
+
+about:
+  home: https://therion.speleo.sk/
+  summary: 'cave surveying and mapping software'
+  license: GPL-2
+
+test:
+  commands:
+    - therion --version | grep -q {{ version }}
